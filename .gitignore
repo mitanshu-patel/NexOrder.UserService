@@ -2,12 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/NexOrder.UserService
-/NexOrder.UserService/Properties/launchSettings.json
-/NexOrder.UserService/host.json
 /NexOrder.UserService.Application/bin/Debug/net8.0
 /NexOrder.UserService.Application/obj
-/.vs/ProjectEvaluation
 /NexOrder.UserService.Shared/bin/Debug/net8.0
-/NexOrder.UserService.Shared/obj/Debug/net8.0
 /NexOrder.UserService.Shared/obj
+/.vs/NexOrder.UserService
+/NexOrder.UserService/Properties/launchSettings.json
