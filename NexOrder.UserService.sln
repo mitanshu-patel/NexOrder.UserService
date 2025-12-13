@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexOrder.UserService.Applic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexOrder.UserService.Shared", "NexOrder.UserService.Shared\NexOrder.UserService.Shared.csproj", "{0CC82C56-FE41-7523-22F8-9C0CC8E16A8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexOrder.UserService.Domain", "NexOrder.UserService.Domain\NexOrder.UserService.Domain.csproj", "{079D11BD-2513-44BA-8611-0AECAFB38C5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexOrder.UserService.Infrastructure", "NexOrder.UserService.Infrastructure\NexOrder.UserService.Infrastructure.csproj", "{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{0CC82C56-FE41-7523-22F8-9C0CC8E16A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CC82C56-FE41-7523-22F8-9C0CC8E16A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CC82C56-FE41-7523-22F8-9C0CC8E16A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{079D11BD-2513-44BA-8611-0AECAFB38C5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{079D11BD-2513-44BA-8611-0AECAFB38C5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{079D11BD-2513-44BA-8611-0AECAFB38C5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{079D11BD-2513-44BA-8611-0AECAFB38C5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

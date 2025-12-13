@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace NexOrder.UserService.Application.Users.AddUser
 {
-    public record AddUserResult;
+    public record AddUserResult(int UserId);
 }

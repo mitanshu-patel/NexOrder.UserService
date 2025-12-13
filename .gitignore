@@ -8,3 +8,9 @@
 /NexOrder.UserService.Shared/obj
 /.vs/NexOrder.UserService
 /NexOrder.UserService/Properties/launchSettings.json
+/.vs/ProjectEvaluation
+/NexOrder.UserService.Domain/bin/Debug/net8.0
+/NexOrder.UserService.Domain/obj
+/NexOrder.UserService.Infrastructure/bin/Debug/net8.0
+/NexOrder.UserService.Infrastructure/obj
+/NexOrder.UserService.Infrastructure/local.settings.json

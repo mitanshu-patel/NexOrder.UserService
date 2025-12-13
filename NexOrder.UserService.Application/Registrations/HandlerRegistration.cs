@@ -15,8 +15,8 @@ namespace NexOrder.UserService.Application.Registrations
         public static void RegisterHandlers(this IServiceCollection services)
         {
             var handlerTypes = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.GetInterfaces().Any(IsHandlerInterface))
-                .ToList();
+            .Where(t => !t.IsAbstract && !t.IsInterface && t.GetInterfaces().Any(IsHandlerInterface))
+            .ToList();
 
             foreach (var handlerType in handlerTypes)
             {

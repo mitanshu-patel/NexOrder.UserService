@@ -9,7 +9,7 @@ namespace NexOrder.UserService.Shared.Common
         {
             if (customResponse.ResponseCode == System.Net.HttpStatusCode.BadRequest)
             {
-                return new BadRequestObjectResult(customResponse.ErrorMessage);
+                return new BadRequestObjectResult(customResponse.Errors != null ? customResponse.Errors : customResponse.ErrorMessage);
             }
             else if (customResponse.ResponseCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -40,12 +40,13 @@ namespace NexOrder.UserService.Shared.Common
             return customResponse;
         }
 
-        public static CustomResponse<T> BadRequest<T>(string errorMessage)
+        public static CustomResponse<T> BadRequest<T>(string errorMessage, Dictionary<string, string>? errors = null)
         {
             var customResponse = new CustomResponse<T>
             {
                 ErrorMessage = errorMessage,
                 ResponseCode = System.Net.HttpStatusCode.BadRequest,
+                Errors = errors,
             };
             return customResponse;
         }

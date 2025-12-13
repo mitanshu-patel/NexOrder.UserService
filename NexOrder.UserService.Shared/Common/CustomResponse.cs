@@ -11,6 +11,8 @@ namespace NexOrder.UserService.Shared.Common
     {
         public HttpStatusCode ResponseCode { get; set; }
         public string ErrorMessage { get; set; }
+
+        public Dictionary<string, string>? Errors { get; set; }
         public T Data { get; set; }
     }
 }

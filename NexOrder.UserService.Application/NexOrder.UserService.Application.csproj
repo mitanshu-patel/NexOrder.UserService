@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NexOrder.UserService.Domain\NexOrder.UserService.Domain.csproj" />
     <ProjectReference Include="..\NexOrder.UserService.Shared\NexOrder.UserService.Shared.csproj" />
   </ItemGroup>
 </Project>
