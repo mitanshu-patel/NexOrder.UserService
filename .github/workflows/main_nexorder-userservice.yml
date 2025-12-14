@@ -37,6 +37,9 @@ jobs:
           dotnet build --configuration Release --output ./output
           popd
 
+      - name: Install EF Core CLI
+        run: dotnet tool install --global dotnet-ef
+
       - name: Apply EF Core migrations
         run: |
           dotnet ef database update \
@@ -61,3 +64,4 @@ jobs:
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
 
           
+
