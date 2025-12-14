@@ -12,7 +12,7 @@ on:
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
-
+  
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -35,6 +35,21 @@ jobs:
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           dotnet build --configuration Release --output ./output
           popd
+
+      - name: Clear NuGet cache
+        run: dotnet nuget locals all --clear
+
+      - name: Install EF Core CLI
+        run: dotnet tool install --global dotnet-ef --version 8.0.22
+
+      - name: Apply EF Core migrations
+        run: |
+          dotnet ef database update \
+            --project NexOrder.UserService.Infrastructure \
+            --startup-project NexOrder.UserService.Infrastructure \
+            --context UsersContext
+        env:
+          ConnectionStrings__SystemDbConnectionString: ${{ secrets.SQL_CONN }}
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -50,4 +65,14 @@ jobs:
           app-name: 'NexOrder-UserService'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+
           
+
+
+
+
+
+
+
+
+
