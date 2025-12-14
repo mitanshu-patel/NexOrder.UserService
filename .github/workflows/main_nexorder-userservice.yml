@@ -49,7 +49,7 @@ jobs:
             --startup-project NexOrder.UserService.Infrastructure \
             --context UsersContext
         env:
-          SystemDbConnectionString: ${{ secrets.SQL_CONN }}
+          ConnectionStrings__SystemDbConnectionString: ${{ secrets.SQL_CONN }}
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -67,6 +67,7 @@ jobs:
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
 
           
+
 
 
 
