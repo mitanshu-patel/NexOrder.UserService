@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Registrations;
 using NexOrder.UserService.Domain;
+using NexOrder.UserService.Infrastructure;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -25,21 +26,4 @@ builder.Services.AddScoped<IMediator, Mediator>();
 builder.Services.AddDbContext<UsersContext>(
     v => v.UseSqlServer(configuration.GetConnectionString("SystemDbConnectionString"),
     b => b.MigrationsAssembly("NexOrder.UserService.Infrastructure")));
-var host = builder.Build();
-
-// Apply migrations at startup
-//using (var scope = host.Services.CreateScope())
-//{
-//    try
-//    {
-//        var db = scope.ServiceProvider.GetRequiredService<UsersContext>();
-//        db.Database.Migrate();
-//    }
-//    catch (Exception ex)
-//    {
-//        Console.WriteLine($"Migration failed: {ex.Message}");
-//        throw;
-//    }
-//}
-
-host.Run();
+builder.Build().Run();

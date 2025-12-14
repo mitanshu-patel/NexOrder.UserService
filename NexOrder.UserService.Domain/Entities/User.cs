@@ -17,5 +17,9 @@ namespace NexOrder.UserService.Domain.Entities
         public string Password { get; set; }
 
         public bool IsSelfRegistered { get; set; } = true;
+
+        public bool IsDeleted { get; set; } = false;
+
+        public DateTime? CreatedAtUtc { get; set; }
     }
 }

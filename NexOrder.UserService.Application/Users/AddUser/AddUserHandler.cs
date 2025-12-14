@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using FluentValidation.TestHelper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NexOrder.UserService.Application.Common;
-using NexOrder.UserService.Domain;
 using NexOrder.UserService.Domain.Entities;
+using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.AddUser
@@ -12,31 +12,46 @@ namespace NexOrder.UserService.Application.Users.AddUser
     public class AddUserHandler : RequestHandlerBase<AddUserCommand, CustomResponse<AddUserResult>>
     {
         private readonly UsersContext dbContext;
-        public AddUserHandler(UsersContext usersContext)
+        private readonly ILogger<AddUserHandler> logger;
+        public AddUserHandler(UsersContext usersContext, ILogger<AddUserHandler> logger)
         {
             this.dbContext = usersContext;
+            this.logger = logger;
         }
         protected override async Task<CustomResponse<AddUserResult>> ExecuteCommandAsync(AddUserCommand command)
         {
-            var userExists = await this.dbContext.Users
-                .AnyAsync(u => u.Email == command.Email);
-
-            if(userExists)
+            try
             {
-                return CustomHttpResult.BadRequest<AddUserResult>("User with the same email already exists.");
+                this.logger.LogInformation("AddUserHandler: ExecuteCommandAsync execution started");
+                var userExists = await this.dbContext.Users
+                    .AnyAsync(u => u.Email == command.Email);
+
+                if (userExists)
+                {
+                    this.logger.LogError("User with the email :{email} already exists.", command.Email);
+                    return CustomHttpResult.BadRequest<AddUserResult>("User with the same email already exists.");
+                }
+
+                var user = new User
+                {
+                    Name = command.Name,
+                    Email = command.Email,
+                    Password = command.Password.ComputeSHA256Hash(),
+                    CreatedAtUtc = DateTime.UtcNow,
+                };
+
+                this.dbContext.Users.Add(user);
+                await this.dbContext.SaveChangesAsync();
+
+                this.logger.LogInformation("AddUserHandler: ExecuteCommandAsync execution successfully with Id:{userId}", user.Id);
+
+                return CustomHttpResult.Ok(new AddUserResult(user.Id));
             }
-
-            var user = new User
+           catch(Exception ex)
             {
-                Name = command.Name,
-                Email = command.Email,
-                Password = command.Password.ComputeSHA256Hash(),
-            };
-
-            this.dbContext.Users.Add(user);
-            await this.dbContext.SaveChangesAsync();
-
-            return CustomHttpResult.Ok(new AddUserResult(user.Id));
+                this.logger.LogError(ex, "AddUserHandler: exception occurred with message:{message}", ex.Message);
+                throw;
+            }
         }
 
         protected override CustomResponse<AddUserResult> GetValidationFailedResult(ValidationResult validationResult)

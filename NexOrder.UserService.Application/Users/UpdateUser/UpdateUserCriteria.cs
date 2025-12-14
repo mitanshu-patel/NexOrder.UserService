@@ -1,6 +1,6 @@
-﻿namespace NexOrder.UserService.Application.Users.AddUser
+﻿namespace NexOrder.UserService.Application.Users.UpdateUser
 {
-    public record AddUserCommand
+    public record UpdateUserCriteria
     {
         public string Name { get; init; }
 
