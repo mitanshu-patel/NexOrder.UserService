@@ -28,18 +28,18 @@ builder.Services.AddDbContext<UsersContext>(
 var host = builder.Build();
 
 // Apply migrations at startup
-using (var scope = host.Services.CreateScope())
-{
-    try
-    {
-        var db = scope.ServiceProvider.GetRequiredService<UsersContext>();
-        db.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Migration failed: {ex.Message}");
-        throw;
-    }
-}
+//using (var scope = host.Services.CreateScope())
+//{
+//    try
+//    {
+//        var db = scope.ServiceProvider.GetRequiredService<UsersContext>();
+//        db.Database.Migrate();
+//    }
+//    catch (Exception ex)
+//    {
+//        Console.WriteLine($"Migration failed: {ex.Message}");
+//        throw;
+//    }
+//}
 
 host.Run();
