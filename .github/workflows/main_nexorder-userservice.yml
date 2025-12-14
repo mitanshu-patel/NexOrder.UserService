@@ -46,8 +46,10 @@ jobs:
       - name: Apply EF Core migrations
         run: |
           dotnet ef database update \
-            --project src/NexOrder.UserService.Infrastructure \
-            --startup-project src/NexOrder.UserService
+            --project NexOrder.UserService.Infrastructure \
+            --startup-project NexOrder.UserService \
+            --context UsersContext \
+            --verbose
         env:
           ConnectionStrings__DefaultConnection: ${{ secrets.SQL_CONN }}
       
@@ -67,5 +69,6 @@ jobs:
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
 
           
+
 
 
