@@ -47,7 +47,7 @@ jobs:
         run: |
           dotnet ef database update \
             --project NexOrder.UserService.Infrastructure \
-            --startup-project NexOrder.UserService \
+            --startup-project NexOrder.Infrastructure \
             --context UsersContext \
             --verbose
         env:
@@ -69,6 +69,7 @@ jobs:
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
 
           
+
 
 
 
