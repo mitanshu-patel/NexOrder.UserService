@@ -37,8 +37,11 @@ jobs:
           dotnet build --configuration Release --output ./output
           popd
 
+      - name: Clear NuGet cache
+        run: dotnet nuget locals all --clear
+
       - name: Install EF Core CLI
-        run: dotnet tool install --global dotnet-ef
+        run: dotnet tool install --global dotnet-ef --version 8.0.22
 
       - name: Apply EF Core migrations
         run: |
@@ -64,4 +67,5 @@ jobs:
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
 
           
+
 
