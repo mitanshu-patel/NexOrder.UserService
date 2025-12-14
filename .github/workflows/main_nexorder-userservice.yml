@@ -12,7 +12,7 @@ on:
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
-  SystemDbConnectionString: ${{ secrets.SQL_CONN }}
+  ConnectionStrings__SystemDbConnectionString: ${{ secrets.SQL_CONN }}
 
 jobs:
   build-and-deploy:
@@ -51,7 +51,7 @@ jobs:
             --context UsersContext \
             --verbose
         env:
-          SystemDbConnectionString: ${{ secrets.SQL_CONN }}
+          ConnectionStrings__SystemDbConnectionString: ${{ secrets.SQL_CONN }}
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -69,6 +69,7 @@ jobs:
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
 
           
+
 
 
 
