@@ -60,11 +60,12 @@ concerns and testability.
 
 ## 🛡 Security Restrictions
 
--   API access only via **API Management**
--   Direct public access disabled
--   JWT validation through inbound APIM policy
--   Database access restricted via Managed Identity / AAD
--   Principle of least privilege enforced
+- Azure Function App access is restricted by IP, allowing only the outbound IP of Azure API Management.
+- Direct access to the function URL is blocked.
+- CORS is configured to allow only the API Management origin.
+- All requests must go through Azure API Management.
+
+This ensures the authentication service is not publicly accessible and enforces secure access routing.
 
 ------------------------------------------------------------------------
 
@@ -99,10 +100,10 @@ concerns and testability.
 
 ## 🌐 API Management Integration
 
--   All requests routed via **Azure API Management**
--   `validate-jwt` inbound policy enforced
--   Rate limiting & throttling supported
--   Centralized logging and monitoring
+- API is added to API Management by referencing the deployed Azure Function App.
+- Inbound policy includes CORS configuration.
+- `validate-jwt` inbound policy enforced
+- API Management becomes the only entry point for clients consuming this authentication service.
 
 ------------------------------------------------------------------------
 
@@ -120,7 +121,7 @@ concerns and testability.
 ``` bash
 dotnet restore
 dotnet build
-dotnet run --project NexOrder.UserService.API
+dotnet run --project NexOrder.UserService
 ```
 
 ------------------------------------------------------------------------
@@ -150,6 +151,19 @@ dotnet ef database update \
 -   Secure calls using APIM
 -   Auth validation delegated to AuthService
 -   Designed for future event-driven architecture
+
+------------------------------------------------------------------------
+
+
+## Summary
+
+| Feature | Implemented |
+|--------|-------------|
+| Inter-Service Communication to Authservice | Yes |
+| JWT token validation via API-M | Yes |
+| GitHub Actions CI/CD | Yes |
+| CORS restricted to APIM | Yes |
+| Public access blocked | Yes |
 
 ------------------------------------------------------------------------
 
