@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Users.AddUser;
+using NexOrder.UserService.Application.Users.AuthenticateUser;
 using NexOrder.UserService.Application.Users.DeleteUser;
 using NexOrder.UserService.Application.Users.GetUser;
 using NexOrder.UserService.Application.Users.SearchUsers;
@@ -79,7 +80,7 @@ public class UserServiceFunction
     }
 
     [Function("SearchUsers")]
-    [OpenApiOperation(operationId: "SearchUsers", tags: new[] { "SearchUsers" }, Description = "Sarch users for given criteria with pagination.")]
+    [OpenApiOperation(operationId: "SearchUsers", tags: new[] { "SearchUsers" }, Description = "Search users for given criteria with pagination.")]
     [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(SearchUsersQuery))]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(SearchUsersResult))]
     public async Task<IActionResult> SearchUsers([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/users/search")] HttpRequest req)
@@ -87,6 +88,18 @@ public class UserServiceFunction
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         var data = JsonConvert.DeserializeObject<SearchUsersQuery>(requestBody);
         var result = await this.mediator.SendAsync<SearchUsersQuery, CustomResponse<SearchUsersResult>>(data);
+        return result.GetResponse();
+    }
+
+    [Function("AuthenticateUser")]
+    [OpenApiOperation(operationId: "AuthenticateUser", tags: new[] { "AuthenticateUser" }, Description = "Authenticate user credentials.")]
+    [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(AuthenticateUserCommand))]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(AuthenticateUserResult))]
+    public async Task<IActionResult> AuthenticateUser([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/users/authenticate")] HttpRequest req)
+    {
+        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        var data = JsonConvert.DeserializeObject<AuthenticateUserCommand>(requestBody);
+        var result = await this.mediator.SendAsync<AuthenticateUserCommand, CustomResponse<AuthenticateUserResult>>(data);
         return result.GetResponse();
     }
 }

@@ -4,19 +4,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Domain;
-using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.DeleteUser
 {
     public class DeleteUserHandler : RequestHandlerBase<DeleteUserCommand, CustomResponse<DeleteUserResult>>
     {
-        private readonly UsersContext dbContext;
+        private readonly IUserRepo userRepo;
         private readonly ILogger<DeleteUserHandler> logger;
 
-        public DeleteUserHandler(UsersContext dbContext, ILogger<DeleteUserHandler> logger)
+        public DeleteUserHandler(IUserRepo userRepo, ILogger<DeleteUserHandler> logger)
         {
-            this.dbContext = dbContext;
+            this.userRepo = userRepo;
             this.logger = logger;
         }
         protected async override Task<CustomResponse<DeleteUserResult>> ExecuteCommandAsync(DeleteUserCommand command)
@@ -24,7 +23,7 @@ namespace NexOrder.UserService.Application.Users.DeleteUser
             try
             {
                 this.logger.LogInformation("DeleteUserHandler: ExecuteCommandAsync execution started");
-                var userDetail = await dbContext.Users.Where(v => v.Id == command.UserId).FirstOrDefaultAsync();
+                var userDetail = await userRepo.GetUsers().Where(v => v.Id == command.UserId).FirstOrDefaultAsync();
 
                 if (userDetail == null)
                 {
@@ -34,7 +33,7 @@ namespace NexOrder.UserService.Application.Users.DeleteUser
 
                 userDetail.IsDeleted = true;
               
-                await this.dbContext.SaveChangesAsync();
+                await this.userRepo.UpdateUserAsync(userDetail);
 
                 this.logger.LogInformation("DeleteUserHandler: ExecuteCommandAsync execution completed and deleted user");
 

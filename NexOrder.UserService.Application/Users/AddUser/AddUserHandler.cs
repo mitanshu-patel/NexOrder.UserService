@@ -4,18 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Domain.Entities;
-using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.AddUser
 {
     public class AddUserHandler : RequestHandlerBase<AddUserCommand, CustomResponse<AddUserResult>>
     {
-        private readonly UsersContext dbContext;
+        private readonly IUserRepo userRepo;
         private readonly ILogger<AddUserHandler> logger;
-        public AddUserHandler(UsersContext usersContext, ILogger<AddUserHandler> logger)
+        public AddUserHandler(IUserRepo userRepo, ILogger<AddUserHandler> logger)
         {
-            this.dbContext = usersContext;
+            this.userRepo = userRepo;
             this.logger = logger;
         }
         protected override async Task<CustomResponse<AddUserResult>> ExecuteCommandAsync(AddUserCommand command)
@@ -23,7 +22,7 @@ namespace NexOrder.UserService.Application.Users.AddUser
             try
             {
                 this.logger.LogInformation("AddUserHandler: ExecuteCommandAsync execution started");
-                var userExists = await this.dbContext.Users
+                var userExists = await this.userRepo.GetUsers()
                     .AnyAsync(u => u.Email == command.Email);
 
                 if (userExists)
@@ -40,8 +39,7 @@ namespace NexOrder.UserService.Application.Users.AddUser
                     CreatedAtUtc = DateTime.UtcNow,
                 };
 
-                this.dbContext.Users.Add(user);
-                await this.dbContext.SaveChangesAsync();
+                await this.userRepo.AddUserAsync(user);
 
                 this.logger.LogInformation("AddUserHandler: ExecuteCommandAsync execution successfully with Id:{userId}", user.Id);
 

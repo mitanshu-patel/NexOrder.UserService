@@ -6,7 +6,6 @@ using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Users.SearchUsers.DTOs;
 using NexOrder.UserService.Application.Users.UpdateUser;
 using NexOrder.UserService.Domain;
-using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Shared.Common;
 using System;
 using System.Collections.Generic;
@@ -19,19 +18,19 @@ namespace NexOrder.UserService.Application.Users.SearchUsers
     public class SearchUsersHandler : RequestHandlerBase<SearchUsersQuery, CustomResponse<SearchUsersResult>>
     {
         private readonly ILogger<SearchUsersHandler> logger;
-        private readonly UsersContext dbContext;
+        private readonly IUserRepo userRepo;
 
-        public SearchUsersHandler(ILogger<SearchUsersHandler> logger, UsersContext dbContext)
+        public SearchUsersHandler(ILogger<SearchUsersHandler> logger, IUserRepo userRepo)
         {
             this.logger = logger;
-            this.dbContext = dbContext;
+            this.userRepo = userRepo;
         }
         protected async override Task<CustomResponse<SearchUsersResult>> ExecuteCommandAsync(SearchUsersQuery command)
         {
             try
             {
                 this.logger.LogInformation("SearchUsersHandler: ExecuteCommandAsync execution started");
-                var users = this.dbContext.Users.AsQueryable();
+                var users = this.userRepo.GetUsers();
 
                 if (!string.IsNullOrEmpty(command.SearchText))
                 {

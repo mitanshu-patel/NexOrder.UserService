@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NexOrder.UserService.Application;
 using NexOrder.UserService.Domain.Entities;
 
 namespace NexOrder.UserService.Infrastructure

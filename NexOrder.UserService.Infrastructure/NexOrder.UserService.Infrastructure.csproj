@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NexOrder.UserService.Application\NexOrder.UserService.Application.csproj" />
     <ProjectReference Include="..\NexOrder.UserService.Domain\NexOrder.UserService.Domain.csproj" />
   </ItemGroup>
 

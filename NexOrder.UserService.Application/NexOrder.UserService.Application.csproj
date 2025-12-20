@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NexOrder.UserService.Domain\NexOrder.UserService.Domain.csproj" />
-    <ProjectReference Include="..\NexOrder.UserService.Infrastructure\NexOrder.UserService.Infrastructure.csproj" />
     <ProjectReference Include="..\NexOrder.UserService.Shared\NexOrder.UserService.Shared.csproj" />
   </ItemGroup>
 </Project>

@@ -4,19 +4,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Domain;
-using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.UpdateUser
 {
     public class UpdateUserHandler : RequestHandlerBase<UpdateUserCommand, CustomResponse<UpdateUserResult>>
     {
-        private readonly UsersContext dbContext;
+        private readonly IUserRepo userRepo;
         private readonly ILogger<UpdateUserHandler> logger;
 
-        public UpdateUserHandler(UsersContext dbContext, ILogger<UpdateUserHandler> logger)
+        public UpdateUserHandler(IUserRepo userRepo, ILogger<UpdateUserHandler> logger)
         {
-            this.dbContext = dbContext;
+            this.userRepo = userRepo;
             this.logger = logger;
         }
 
@@ -25,7 +24,7 @@ namespace NexOrder.UserService.Application.Users.UpdateUser
             try
             {
                 this.logger.LogInformation("UpdateUserHandler: ExecuteCommandAsync execution started");
-                var userDetail = await dbContext.Users.Where(v => v.Id == command.UserId).FirstOrDefaultAsync();
+                var userDetail = await userRepo.GetUsers().Where(v => v.Id == command.UserId).FirstOrDefaultAsync();
 
                 if (userDetail == null)
                 {
@@ -37,7 +36,7 @@ namespace NexOrder.UserService.Application.Users.UpdateUser
                 userDetail.Email = command.Criteria.Email;
                 userDetail.Password = command.Criteria.Password.ComputeSHA256Hash();
 
-                await this.dbContext.SaveChangesAsync();
+                await this.userRepo.UpdateUserAsync(userDetail);
 
                 this.logger.LogInformation("UpdateUserHandler: ExecuteCommandAsync execution completed and saved details");
 

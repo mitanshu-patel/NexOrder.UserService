@@ -6,18 +6,17 @@ using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Users.AddUser;
 using NexOrder.UserService.Application.Users.GetUser.DTOs;
 using NexOrder.UserService.Domain;
-using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.GetUser
 {
     public class GetUserHandler : RequestHandlerBase<GetUserQuery, CustomResponse<GetUserResult>>
     {
-        private readonly UsersContext dbContext;
+        private readonly IUserRepo userRepo;
         private readonly ILogger<AddUserHandler> logger;
-        public GetUserHandler(UsersContext dbContext, ILogger<AddUserHandler> logger)
+        public GetUserHandler(IUserRepo userRepo, ILogger<AddUserHandler> logger)
         {
-            this.dbContext = dbContext;
+            this.userRepo = userRepo;
             this.logger = logger;
         }
 
@@ -26,7 +25,7 @@ namespace NexOrder.UserService.Application.Users.GetUser
             try
             {
                 this.logger.LogInformation("GetUserHandler: ExecuteCommandAsync execution started");
-                var userDetail = await this.dbContext.Users.Where(v => v.Id == command.UserId).Select(v => new GetUserDto
+                var userDetail = await this.userRepo.GetUsers().Where(v => v.Id == command.UserId).Select(v => new GetUserDto
                 {
                     Id = v.Id,
                     Name = v.Name,
