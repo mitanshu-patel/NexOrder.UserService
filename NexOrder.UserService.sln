@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexOrder.UserService.Domain
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexOrder.UserService.Infrastructure", "NexOrder.UserService.Infrastructure\NexOrder.UserService.Infrastructure.csproj", "{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexOrder.UserService.Messages", "NexOrder.UserService.Messages\NexOrder.UserService.Messages.csproj", "{7A38B520-2AF6-4709-B21D-9BCDC954B5DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{752B4E9F-8260-4A41-B8F9-3C45D0FC38DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A38B520-2AF6-4709-B21D-9BCDC954B5DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A38B520-2AF6-4709-B21D-9BCDC954B5DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A38B520-2AF6-4709-B21D-9BCDC954B5DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A38B520-2AF6-4709-B21D-9BCDC954B5DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

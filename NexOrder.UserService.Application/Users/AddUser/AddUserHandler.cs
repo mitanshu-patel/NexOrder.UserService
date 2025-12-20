@@ -3,7 +3,9 @@ using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NexOrder.UserService.Application.Common;
+using NexOrder.UserService.Application.Services;
 using NexOrder.UserService.Domain.Entities;
+using NexOrder.UserService.Messages.Events;
 using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.AddUser
@@ -12,10 +14,12 @@ namespace NexOrder.UserService.Application.Users.AddUser
     {
         private readonly IUserRepo userRepo;
         private readonly ILogger<AddUserHandler> logger;
-        public AddUserHandler(IUserRepo userRepo, ILogger<AddUserHandler> logger)
+        private readonly IMessageDeliveryService messageDeliveryService;
+        public AddUserHandler(IUserRepo userRepo, ILogger<AddUserHandler> logger, IMessageDeliveryService messageDeliveryService)
         {
             this.userRepo = userRepo;
             this.logger = logger;
+            this.messageDeliveryService = messageDeliveryService;
         }
         protected override async Task<CustomResponse<AddUserResult>> ExecuteCommandAsync(AddUserCommand command)
         {
@@ -40,6 +44,7 @@ namespace NexOrder.UserService.Application.Users.AddUser
                 };
 
                 await this.userRepo.AddUserAsync(user);
+                await this.messageDeliveryService.PublishMessageAsync(new UserUpdated(user.Id, user.Email, user.Name), UserServiceTopic.TopicName);
 
                 this.logger.LogInformation("AddUserHandler: ExecuteCommandAsync execution successfully with Id:{userId}", user.Id);
 

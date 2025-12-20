@@ -11,6 +11,7 @@ using NexOrder.UserService.Application.Services;
 using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Infrastructure.HttpClients;
 using NexOrder.UserService.Infrastructure.Repos;
+using NexOrder.UserService.Infrastructure.Services;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -23,6 +24,7 @@ builder.Services
     .ConfigureFunctionsApplicationInsights();
 builder.Services.RegisterHandlers();
 builder.Services.AddScoped<IMediator, Mediator>();
+builder.Services.AddSingleton<IMessageDeliveryService, MessageDeliveryService>();
 builder.Services.AddDbContext<UsersContext>(
     v => v.UseSqlServer(configuration.GetConnectionString("SystemDbConnectionString"),
     b => b.MigrationsAssembly("NexOrder.UserService.Infrastructure")));

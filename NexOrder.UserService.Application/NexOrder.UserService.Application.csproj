@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NexOrder.UserService.Domain\NexOrder.UserService.Domain.csproj" />
+    <ProjectReference Include="..\NexOrder.UserService.Messages\NexOrder.UserService.Messages.csproj" />
     <ProjectReference Include="..\NexOrder.UserService.Shared\NexOrder.UserService.Shared.csproj" />
   </ItemGroup>
 </Project>

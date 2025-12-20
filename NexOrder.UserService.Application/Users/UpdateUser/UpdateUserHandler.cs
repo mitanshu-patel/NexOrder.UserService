@@ -3,7 +3,9 @@ using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NexOrder.UserService.Application.Common;
+using NexOrder.UserService.Application.Services;
 using NexOrder.UserService.Domain;
+using NexOrder.UserService.Messages.Events;
 using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.UpdateUser
@@ -12,11 +14,12 @@ namespace NexOrder.UserService.Application.Users.UpdateUser
     {
         private readonly IUserRepo userRepo;
         private readonly ILogger<UpdateUserHandler> logger;
-
-        public UpdateUserHandler(IUserRepo userRepo, ILogger<UpdateUserHandler> logger)
+        private readonly IMessageDeliveryService messageDeliveryService;
+        public UpdateUserHandler(IUserRepo userRepo, ILogger<UpdateUserHandler> logger, IMessageDeliveryService messageDeliveryService)
         {
             this.userRepo = userRepo;
             this.logger = logger;
+            this.messageDeliveryService = messageDeliveryService;
         }
 
         protected async override Task<CustomResponse<UpdateUserResult>> ExecuteCommandAsync(UpdateUserCommand command)
@@ -37,6 +40,7 @@ namespace NexOrder.UserService.Application.Users.UpdateUser
                 userDetail.Password = command.Criteria.Password.ComputeSHA256Hash();
 
                 await this.userRepo.UpdateUserAsync(userDetail);
+                await this.messageDeliveryService.PublishMessageAsync(new UserUpdated(userDetail.Id, userDetail.Email, userDetail.Name), UserServiceTopic.TopicName);
 
                 this.logger.LogInformation("UpdateUserHandler: ExecuteCommandAsync execution completed and saved details");
 
