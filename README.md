@@ -129,9 +129,10 @@ dotnet run --project NexOrder.UserService
 ## 🗄 Applying Database Migrations
 
 ``` bash
-dotnet ef database update \
-  --project NexOrder.UserService.Infrastructure \
-  --startup-project NexOrder.UserService
+ dotnet ef database update \
+    --project NexOrder.UserService.Infrastructure \
+    --startup-project NexOrder.UserService.Infrastructure \
+    --context UsersContext
 ```
 
 ------------------------------------------------------------------------
