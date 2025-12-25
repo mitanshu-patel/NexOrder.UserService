@@ -36,6 +36,7 @@ NexOrder.UserService
 ├── NexOrder.UserService.Domain        # Domain entities & business rules
 ├── NexOrder.UserService.Application   # Use cases, handlers, interfaces
 ├── NexOrder.UserService.Infrastructure# EF Core, DB context, migrations
+├── NexOrder.UserService.Messages      # Integration message contracts
 ├── NexOrder.UserService.Shared        # Shared utilities & common models
 ```
 
@@ -48,6 +49,7 @@ NexOrder.UserService
 - Clean separation of concerns across layers
 - Designed for scalability and extensibility
 - Secured behind Azure API Management
+- Event publication for downstream services
 
 ---
 
@@ -59,6 +61,7 @@ NexOrder.UserService
 - **MediatR**
 - **Azure SQL**
 - **Azure API Management**
+- **Azure Service Bus**
 - **GitHub Actions**
 
 ---
@@ -75,6 +78,55 @@ The service can be consumed by:
 - Frontend applications via API Management
 
 All inbound requests are routed and secured through **Azure API Management**, ensuring centralized authentication and policy enforcement.
+
+---
+
+## 📣 Event-Driven Messaging
+
+NexOrder.UserService participates in an **event-driven architecture** using **Azure Service Bus** for asynchronous communication between microservices.
+
+### 🔄 Message Publishing
+
+When a user is updated, the service publishes a domain event to Azure Service Bus:
+
+- **Topic:** `userserviceevents`
+- **Event Type:** `UserUpdated`
+- **Message Contract Library:** `NexOrder.UserService.Messages`
+
+This enables other services (e.g., Order Service, Inventory Service) to react to user changes without tight coupling.
+
+---
+
+### 🧾 Message Contract
+
+Message contracts are defined in a dedicated shared library:
+
+```
+NexOrder.UserService.Messages
+└── UserUpdated
+```
+
+Benefits:
+- Strongly typed event contracts
+- Clear ownership of integration boundaries
+- Easy versioning and reuse across services
+
+---
+
+### 📐 Event Flow (User Update)
+
+1. Client updates a user via API
+2. UserService persists changes using EF Core
+3. `UserUpdated` event is published to Service Bus topic
+4. Downstream services consume the event asynchronously
+
+---
+
+### 🧠 Design Rationale
+
+- Improves scalability and resilience
+- Enables future consumers without modifying User Service
+- Mirrors real-world distributed system design
 
 ---
 
