@@ -1,86 +1,101 @@
 # NexOrder.UserService
 
-NexOrder.UserService is a core microservice in the **NexOrder**
-ecosystem responsible for **user management**.\
-It is implemented using **Clean Architecture** and mirrors the
-structure, depth, and operational practices of **NexOrder.AuthService**.
+This repository contains the **User Service** microservice for the NexOrder platform — a cloud-native .NET microservices solution built using Clean Architecture principles and Azure services.
 
-------------------------------------------------------------------------
+---
 
-## 🎯 Service Responsibilities
+## 🧱 Overview
 
--   User profile management
--   Ownership of user-related database schema
--   Secure integration with AuthService
--   Designed for cloud-native deployment
+NexOrder.UserService is responsible for **user management and profile-related operations** within the NexOrder ecosystem.  
+The service intentionally keeps business functionality simple (CRUD-style user operations) while demonstrating **real-world backend architecture, cloud-native patterns, security, CI/CD, and inter-service communication**.
 
-------------------------------------------------------------------------
+The primary goal of this project is to showcase **senior-level backend engineering practices**, not feature-heavy business logic.
 
-## 🏗 Clean Architecture Overview
+---
 
-The service strictly follows Clean Architecture, ensuring separation of
-concerns and testability.
+## 🧩 Key Concepts Demonstrated
 
-    NexOrder.UserService
-    │
-    ├── .github/
-    │ └── workflows/
-    │ └── (CI/CD pipelines for GitHub Actions)
-    │
-    ├── NexOrder.UserService.Application/
-    │ └── Application layer (use cases, commands, queries, DTOs)
-    │
-    ├── NexOrder.UserService.Domain/
-    │ └── Domain models, entities, enums, value objects
-    │
-    ├── NexOrder.UserService.Infrastructure/
-    │ └── Persistence, Repositories, Dependency injection, external integrations
-    │
-    ├── NexOrder.UserService.Shared/
-    │ └── Shared utilities, constants, errors, common helpers
-    │
-    ├── NexOrder.UserService/
-    │ └── API project (Controllers, Startup / Program, Filters, Middleware)
-    │
-    ├── NexOrder.UserService.sln
-    ├── .gitignore
+- Clean Architecture (Domain / Application / Infrastructure)
+- Azure Functions (serverless microservice)
+- MediatR (CQRS-style command/query separation)
+- Entity Framework Core
+- Azure SQL Database
+- Azure API Management (API Gateway)
+- JWT-based authentication (validated at API-M)
+- Inter-service HTTP communication
+- GitHub Actions CI/CD
+- Cloud-ready configuration & secrets handling
 
-------------------------------------------------------------------------
+---
 
-## 🔐 Authentication & Authorization
+## 📁 Project Structure
 
--   JWT Bearer authentication
--   Token validation enforced via **Azure API Management**
--   No token issuance in this service
+```
+NexOrder.UserService
+├── NexOrder.UserService               # Azure Functions host
+├── NexOrder.UserService.Domain        # Domain entities & business rules
+├── NexOrder.UserService.Application   # Use cases, handlers, interfaces
+├── NexOrder.UserService.Infrastructure# EF Core, DB context, migrations
+├── NexOrder.UserService.Shared        # Shared utilities & common models
+```
 
-> Authentication responsibility is delegated entirely to
-> **NexOrder.AuthService**.
+---
 
-------------------------------------------------------------------------
+## 🚀 Features
 
-## 🛡 Security Restrictions
+- Create, update, and manage users
+- Retrieve user profiles and details
+- Clean separation of concerns across layers
+- Designed for scalability and extensibility
+- Secured behind Azure API Management
 
-- Azure Function App access is restricted by IP, allowing only the outbound IP of Azure API Management.
-- Direct access to the function URL is blocked.
-- CORS is configured to allow only the API Management origin.
-- All requests must go through Azure API Management.
+---
 
-This ensures the authentication service is not publicly accessible and enforces secure access routing.
+## 🛠️ Tech Stack
 
-------------------------------------------------------------------------
+- **.NET 8**
+- **Azure Functions**
+- **Entity Framework Core**
+- **MediatR**
+- **Azure SQL**
+- **Azure API Management**
+- **GitHub Actions**
 
-## 🗄 Database & Persistence
+---
 
--   Entity Framework Core (Code-First)
--   Azure SQL with AAD authentication
--   Service-owned schema
--   Migration-based schema evolution
+## 🔄 Inter-Service Communication
 
-### Core Entities
+NexOrder.UserService supports **synchronous communication** with other microservices via HTTP APIs.
 
--   `User`
+### 🔗 Usage Scenario
 
-------------------------------------------------------------------------
+The service can be consumed by:
+- Authentication Service (for profile enrichment)
+- Order Service (for user-related validations)
+- Frontend applications via API Management
+
+All inbound requests are routed and secured through **Azure API Management**, ensuring centralized authentication and policy enforcement.
+
+---
+
+## ⚙️ Local Development
+
+### Prerequisites
+
+- .NET SDK 8+
+- Azure Functions Core Tools
+- SQL Server (local or Azure)
+- dotnet-ef CLI
+
+---
+
+### Restore Dependencies
+
+```bash
+dotnet restore
+```
+
+---
 
 ## ⚙️ Application Configuration
 
@@ -89,12 +104,42 @@ This ensures the authentication service is not publicly accessible and enforces 
 ``` json
 {
   "ConnectionStrings": {
-    "SystemDbConnectionString": "<Azure SQL Connection String>"
+    "SystemDbConnectionString": "<Azure SQL Connection String>",
+    "ServiceBusConnectionString": "<Azure Service Bus Connection String>",
   },
   "APIM_BASE_URL": "https://api.nexorder.com/auth"
   }
 }
 ```
+
+---
+
+### Apply EF Core Migrations
+
+```bash
+dotnet ef database update \
+  --project NexOrder.UserService.Infrastructure \
+  --startup-project NexOrder.UserService.Infrastructure
+```
+
+---
+
+### Run Locally
+
+```bash
+func start
+```
+
+---
+
+## 🔐 Security & Authentication
+
+- Authentication is handled by a dedicated **Auth Service**
+- JWT tokens are validated at **Azure API Management**
+- User Service assumes authenticated requests from API-M
+- No authentication logic is embedded inside the microservice
+
+---
 
 ------------------------------------------------------------------------
 
@@ -107,65 +152,35 @@ This ensures the authentication service is not publicly accessible and enforces 
 
 ------------------------------------------------------------------------
 
-## 🚀 Running Locally
+## API Endpoints (Sample)
 
-### Prerequisites
+| Method | Endpoint | Description |
+|------|---------|-------------|
+| POST | /users/search | Search users |
+| GET | /users/{id} | Get user by ID |
+| POST | /users | Create new user |
+| PUT | /users/{id} | Update user |
+| DELETE | /users/{id} | Delete user |
 
--   .NET SDK 8+
--   SQL Server / Azure SQL
--   EF Core CLI
--   Visual Studio / VS Code
+---
 
-### Run Service
+## 🚢 Deployment
 
-``` bash
-dotnet restore
-dotnet build
-dotnet run --project NexOrder.UserService
-```
+The service is deployed using **GitHub Actions** and Azure services:
 
-------------------------------------------------------------------------
+- Build & restore
+- Apply EF Core migrations (controlled pipeline step)
+- Deploy to Azure Function App
+- Secured and exposed via Azure API Management
 
-## 🗄 Applying Database Migrations
+> API Management instances are recreated on demand for cost optimization in non-production environments.
 
-``` bash
- dotnet ef database update \
-    --project NexOrder.UserService.Infrastructure \
-    --startup-project NexOrder.UserService.Infrastructure \
-    --context UsersContext
-```
+---
 
-------------------------------------------------------------------------
+## 📌 Notes
 
-## 🚢 Deployment Strategy
+- Business functionality is intentionally minimal
+- Focus is on architecture, security, and cloud integration
+- Designed to be consumed by any frontend or service
 
--   Azure App Service
--   Uses Managed Identity
--   Secrets stored in Azure Key Vault
--   CI/CD via GitHub Actions
-
-------------------------------------------------------------------------
-
-## 🔄 Inter-Service Communication
-
--   HTTP-based communication
--   Secure calls using APIM
--   Auth validation delegated to AuthService
--   Designed for future event-driven architecture
-
-------------------------------------------------------------------------
-
-
-## Summary
-
-| Feature | Implemented |
-|--------|-------------|
-| Inter-Service Communication to Authservice | Yes |
-| JWT token validation via API-M | Yes |
-| GitHub Actions CI/CD | Yes |
-| CORS restricted to APIM | Yes |
-| Public access blocked | Yes |
-
-------------------------------------------------------------------------
-
-> Part of the **NexOrder Microservices Platform**
+---
