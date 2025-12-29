@@ -1,5 +1,4 @@
 ﻿using FluentValidation.Results;
-using NexOrder.UserService.Application.Users.AddUser;
 using NexOrder.UserService.Shared.Common;
 using System;
 using System.Collections.Generic;
@@ -11,13 +10,13 @@ namespace NexOrder.UserService.Application.Common
 {
     public static class Extensions
     {
-        private static Dictionary<string, string> GetValidationErrors(this List<ValidationFailure> errors)
+        private static Dictionary<string, List<string>> GetValidationErrors(this List<ValidationFailure> errors)
         {
             return errors
                 .GroupBy(e => e.PropertyName)
                 .ToDictionary(
                     g => g.Key,
-                    g => string.Join(", ", g.Select(e => e.ErrorMessage))
+                    g => g.Select(e => e.ErrorMessage).ToList()
                 );
         }
 
