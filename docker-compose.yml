@@ -1,0 +1,40 @@
+networks:
+  nexorderusers-network:
+services:
+  nexorderuserssql:
+    container_name: nexorderuserssql
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    env_file:
+      - local.env
+    ports:
+      - 1436:1433
+    volumes:
+      - nexorderuserssql_data:/var/opt/mssql
+    networks:
+      - nexorderusers-network
+  
+  nexorder.userservice:
+    build:
+      context: .
+      dockerfile: NexOrder.UserService/Dockerfile
+    env_file:
+      - local.env
+      # Following config will be needed in local.env file:-
+        # DB_SERVER_NAME=nexorderuserssql
+        # ACCEPT_EULA=Y
+        # SA_PASSWORD=db_password
+        # DB_NAME=db_name
+        # DB_PASSWORD=db_password!
+        # ServiceBusConnectionString=connectionstring_for_servicebus
+        # APIM_BASE_URL=http://localhost:7024 this is dummy url but you can replace it with actual url of APIM service if you have it running locally. This is needed for local development and testing of APIM policies. If you are not using APIM or not running it locally, you can ignore this variable.
+        # RunMigration=true
+    ports:
+      - 7025:8080
+    networks:
+      - nexorderusers-network
+    depends_on:
+      - nexorderuserssql
+
+volumes:
+    nexorderuserssql_data:
+      driver: local

@@ -9,6 +9,7 @@ using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Registrations;
 using NexOrder.UserService.Application.Services;
 using NexOrder.UserService.Infrastructure;
+using NexOrder.UserService.Infrastructure.Helpers;
 using NexOrder.UserService.Infrastructure.HttpClients;
 using NexOrder.UserService.Infrastructure.Repos;
 using NexOrder.UserService.Infrastructure.Services;
@@ -25,8 +26,9 @@ builder.Services
 builder.Services.RegisterHandlers();
 builder.Services.AddScoped<IMediator, Mediator>();
 builder.Services.AddSingleton<IMessageDeliveryService, MessageDeliveryService>();
+var connectionString = ConnectionStringsHelper.GetDbConnectionString();
 builder.Services.AddDbContext<UsersContext>(
-    v => v.UseSqlServer(configuration.GetConnectionString("SystemDbConnectionString"),
+    v => v.UseSqlServer(connectionString,
     b => b.MigrationsAssembly("NexOrder.UserService.Infrastructure")));
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddHttpClient<IAuthServiceClient, AuthServiceClient>(client =>
@@ -34,4 +36,14 @@ builder.Services.AddHttpClient<IAuthServiceClient, AuthServiceClient>(client =>
     client.BaseAddress =
         new Uri(Environment.GetEnvironmentVariable("APIM_BASE_URL"));
 });
-builder.Build().Run();
+
+var app = builder.Build();
+if (builder.Configuration.GetValue<bool>("RunMigration"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<UsersContext>();
+    db.Database.Migrate();
+    //return; // Exit after migration
+}
+
+app.Run();

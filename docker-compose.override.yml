@@ -1,0 +1,4 @@
+services:
+  nexorder.userservice:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
