@@ -312,18 +312,6 @@ Recommended App Settings (examples):
 | PUT | /users/{id} | Update user |
 | DELETE | /users/{id} | Delete user |
 
----
-
-## 🚢 Deployment
-
-The service is deployed using **GitHub Actions** and Azure services:
-
-- Build & restore
-- Apply EF Core migrations (controlled pipeline step)
-- Deploy to Azure Function App
-- Secured and exposed via Azure API Management
-
-> API Management instances are recreated on demand for cost optimization in non-production environments.
 
 ---
 
