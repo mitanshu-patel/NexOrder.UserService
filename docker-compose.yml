@@ -25,7 +25,7 @@ services:
         # SA_PASSWORD=db_password
         # DB_NAME=db_name
         # DB_PASSWORD=db_password!
-        # ServiceBusConnectionString=connectionstring_for_servicebus
+        # ConnectionStrings__ServiceBusConnectionString=connectionstring_for_servicebus
         # APIM_BASE_URL=http://localhost:7024 this is dummy url but you can replace it with actual url of APIM service if you have it running locally. This is needed for local development and testing of APIM policies. If you are not using APIM or not running it locally, you can ignore this variable.
         # RunMigration=true
     ports:
