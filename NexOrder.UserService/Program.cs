@@ -4,28 +4,43 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NexOrder.Framework.Core;
+using NexOrder.Framework.Core.Common;
 using NexOrder.UserService.Application;
 using NexOrder.UserService.Application.Common;
-using NexOrder.UserService.Application.Registrations;
 using NexOrder.UserService.Application.Services;
 using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Infrastructure.Helpers;
 using NexOrder.UserService.Infrastructure.HttpClients;
 using NexOrder.UserService.Infrastructure.Repos;
-using NexOrder.UserService.Infrastructure.Services;
+using System.Reflection;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
-                    .AddEnvironmentVariables().Build();
+                    .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+var environment = configuration.GetValue<string>("ENVIRONMENT");
+var isDevelopment = !string.IsNullOrEmpty(environment) && environment.Equals(
+            "DEVELOPMENT",
+            System.StringComparison.InvariantCultureIgnoreCase);
 
 builder.ConfigureFunctionsWebApplication();
+var appInsightsConnection = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
 
-builder.Services
-    .AddApplicationInsightsTelemetryWorkerService()
-    .ConfigureFunctionsApplicationInsights();
-builder.Services.RegisterHandlers();
-builder.Services.AddScoped<IMediator, Mediator>();
-builder.Services.AddSingleton<IMessageDeliveryService, MessageDeliveryService>();
+builder.Services.AddNexOrderCustomLogging(isDevelopment, "NexOrder.UserService", appInsightsConnection);
+builder.Services.AddMessageDeliveryService(options =>
+{
+    options.ServiceBusConnectionString = configuration["ServiceBusConnectionString"]
+        ?? configuration.GetConnectionString("ServiceBusConnectionString")
+        ?? string.Empty;
+#if DEBUG
+    options.WebProxyAddress = Environment.GetEnvironmentVariable("WebProxy") ?? string.Empty;
+#endif
+});
+
+builder.Services.RegisterHandlers(Assembly.Load("NexOrder.UserService.Application"));
+
 var connectionString = ConnectionStringsHelper.GetDbConnectionString();
 builder.Services.AddDbContext<UsersContext>(
     v => v.UseSqlServer(connectionString,

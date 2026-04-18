@@ -4,6 +4,8 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NexOrder.Framework.Core.Common;
+using NexOrder.Framework.Core.Contracts;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Users.AddUser;
 using NexOrder.UserService.Application.Users.AuthenticateUser;
@@ -11,7 +13,6 @@ using NexOrder.UserService.Application.Users.DeleteUser;
 using NexOrder.UserService.Application.Users.GetUser;
 using NexOrder.UserService.Application.Users.SearchUsers;
 using NexOrder.UserService.Application.Users.UpdateUser;
-using NexOrder.UserService.Shared.Common;
 using System.Net;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 

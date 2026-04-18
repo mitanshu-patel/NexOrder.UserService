@@ -2,11 +2,11 @@
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NexOrder.Framework.Core.Common;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Users.SearchUsers.DTOs;
 using NexOrder.UserService.Application.Users.UpdateUser;
 using NexOrder.UserService.Domain;
-using NexOrder.UserService.Shared.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

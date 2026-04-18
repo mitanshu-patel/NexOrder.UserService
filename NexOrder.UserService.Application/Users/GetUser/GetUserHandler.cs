@@ -2,11 +2,11 @@
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NexOrder.Framework.Core.Common;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Users.AddUser;
 using NexOrder.UserService.Application.Users.GetUser.DTOs;
 using NexOrder.UserService.Domain;
-using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.GetUser
 {

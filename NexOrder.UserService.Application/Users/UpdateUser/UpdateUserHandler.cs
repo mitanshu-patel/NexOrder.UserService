@@ -2,11 +2,12 @@
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NexOrder.Framework.Core.Common;
+using NexOrder.Framework.Core.Contracts;
 using NexOrder.UserService.Application.Common;
 using NexOrder.UserService.Application.Services;
 using NexOrder.UserService.Domain;
 using NexOrder.UserService.Messages.Events;
-using NexOrder.UserService.Shared.Common;
 
 namespace NexOrder.UserService.Application.Users.UpdateUser
 {
