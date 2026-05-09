@@ -30,7 +30,7 @@ namespace NexOrder.UserService.Application.Users.AuthenticateUser
             try
             {
                 this.logger.LogDebug("Authenticating user with email: {Email}", command.Email);
-                var user = await this.userRepo.GetUsers().Where(v => v.Email == command.Email).Select(v=> new {v.Password}).FirstOrDefaultAsync();
+                var user = await this.userRepo.GetUsers().Where(v => v.Email == command.Email).Select(v=> new {v.Password, v.UserOid}).FirstOrDefaultAsync();
                 
                 if (user == null)
                 { 
@@ -41,7 +41,7 @@ namespace NexOrder.UserService.Application.Users.AuthenticateUser
                 var encryptedPassword = command.Password.ComputeSHA256Hash();
                 if (encryptedPassword.Equals(user.Password))
                 {
-                    var result = await this.authServiceClient.GenerateTokenAsync(command.Email);
+                    var result = await this.authServiceClient.GenerateTokenAsync(command.Email, user.UserOid);
                     if(result.IsSuccess && result.Token != null)
                     {
                         this.logger.LogInformation("User with email {Email} authenticated successfully.", command.Email);

@@ -19,11 +19,12 @@ namespace NexOrder.UserService.Infrastructure.HttpClients
         {
             this._httpClient = httpClient;
         }
-        public async Task<AuthTokenResult> GenerateTokenAsync(string username)
+        public async Task<AuthTokenResult> GenerateTokenAsync(string username, Guid userId)
         {
             var payload = new
             {
-                Email = username
+                Email = username,
+                UserId = userId
             };
 
             var request = new HttpRequestMessage(

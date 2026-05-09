@@ -21,6 +21,9 @@ namespace NexOrder.UserService.Infrastructure.EntityConfigurations
             builder.Property(v => v.Email)
                    .IsRequired();
 
+            builder.Property(v => v.UserOid)
+             .IsRequired();
+
             builder.HasQueryFilter(v => !v.IsDeleted);
 
             builder.Property(v => v.CreatedAtUtc).HasDefaultValue(DateTime.UtcNow);

@@ -9,6 +9,6 @@ namespace NexOrder.UserService.Application.Services
 {
     public interface IAuthServiceClient
     {
-        public Task<AuthTokenResult> GenerateTokenAsync(string username);
+        public Task<AuthTokenResult> GenerateTokenAsync(string username, Guid userId);
     }
 }

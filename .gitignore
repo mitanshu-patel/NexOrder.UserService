@@ -17,3 +17,5 @@
 /NexOrder.UserService.Messages/bin/Debug/net8.0
 /NexOrder.UserService.Messages/obj
 /local.env
+/bin/Debug
+/obj
