@@ -35,6 +35,9 @@ jobs:
           push: true
           tags: practiceregistry.azurecr.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_A489B4C0D1324353B68599E45C3E8466 }}/nexorderuserservice:${{ github.sha }}
           file: NexOrder.UserService/Dockerfile
+          build-args: |
+            GITHUB_USERNAME=${{ github.repository_owner }}
+            GITHUB_TOKEN=${{ secrets.NUGET_TOKEN }}
 
   migrate:
    runs-on: ubuntu-latest
@@ -52,6 +55,14 @@ jobs:
       run: |
         dotnet tool install --global dotnet-ef --version 8.0.*
         echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+    - name: Add GitHub NuGet source
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json \
+          --name github \
+          --username ${{ github.repository_owner }} \
+          --password ${{ secrets.NUGET_TOKEN }} \
+          --store-password-in-clear-text
 
     - name: Run EF Core migrations
       env:
