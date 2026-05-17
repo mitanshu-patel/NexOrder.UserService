@@ -13,7 +13,11 @@ using NexOrder.UserService.Infrastructure;
 using NexOrder.UserService.Infrastructure.Helpers;
 using NexOrder.UserService.Infrastructure.HttpClients;
 using NexOrder.UserService.Infrastructure.Repos;
+using Polly;
+using Polly.Extensions.Http;
+using Polly.RateLimiting;
 using System.Reflection;
+using System.Threading.RateLimiting;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -51,6 +55,35 @@ builder.Services.AddHttpClient<IAuthServiceClient, AuthServiceClient>(client =>
     client.BaseAddress =
         new Uri(Environment.GetEnvironmentVariable("APIM_BASE_URL"));
 });
+
+builder.Services.AddResiliencePipeline("authservice-pipeline", pipelineBuilder =>
+{
+    pipelineBuilder.AddTimeout(TimeSpan.FromSeconds(60))
+    .AddRetry(new Polly.Retry.RetryStrategyOptions
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        Delay = TimeSpan.FromSeconds(2),
+        UseJitter = true,
+        MaxRetryAttempts = 3,
+    })
+    .AddCircuitBreaker(new Polly.CircuitBreaker.CircuitBreakerStrategyOptions
+    {
+        ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>(),
+        FailureRatio = 0.5, // Break if 50% of requests fail
+        SamplingDuration = TimeSpan.FromSeconds(10),
+        MinimumThroughput = 8,
+        BreakDuration = TimeSpan.FromSeconds(15) // Stay open for 15s
+    });
+    //.AddRateLimiter(new TokenBucketRateLimiter(
+    //    new TokenBucketRateLimiterOptions
+    //    {
+    //        TokenLimit = 100,
+    //        TokensPerPeriod = 50,
+    //        ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+    //        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+    //        QueueLimit = 10
+    //    }));
+    });
 
 var app = builder.Build();
 if (builder.Configuration.GetValue<bool>("RunMigration"))
