@@ -128,7 +128,21 @@ Benefits:
 - Enables future consumers without modifying User Service
 - Mirrors real-world distributed system design
 
----
+------------------------------------------------------------------------
+
+### 🏥 Health Checks Implementation
+To ensure system resilience and support container orchestration platforms (like Kubernetes or Azure Container Apps), this service exposes detailed health monitoring endpoints.
+
+#### Configured Dependencies
+The service monitors the connectivity of three critical infrastructure dependencies:
+ - **Database**: EF Core / SQL Server connectivity check.
+ - **AuthService**: Since, UserService calls AuthService via function to function communication, we've health check to check the connectivity.
+
+ **Refer to Program.cs file for Healthchecks middleware registrations**
+ 
+ A separate endpoint for Health check is defined in `HealthFunction.cs` with url: `/health`
+
+------------------------------------------------------------------------
 
 ## Private Nuget Packages
 
