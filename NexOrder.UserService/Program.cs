@@ -56,6 +56,11 @@ builder.Services.AddHttpClient<IAuthServiceClient, AuthServiceClient>(client =>
         new Uri(Environment.GetEnvironmentVariable("APIM_BASE_URL"));
 });
 
+builder.Services
+    .AddHealthChecks()
+    .AddDbContextCheck<UsersContext>("UsersDb")
+    .AddUrlGroup(new Uri($"{Environment.GetEnvironmentVariable("APIM_BASE_URL")}swagger.json"), name: "AuthService");
+
 builder.Services.AddResiliencePipeline("authservice-pipeline", pipelineBuilder =>
 {
     pipelineBuilder.AddTimeout(TimeSpan.FromSeconds(60))
